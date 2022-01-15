@@ -39,8 +39,11 @@ class mode():
 if __name__ == '__main__':
 	numba = [21,16,14,11,9,8,7]
 	nums = [16,16,19,21,21,23,24,24,26,26,26,26,26,27,27,27,28,28,29,29,29,32,34,34,34,35,35,38,38,38,41,42,43,45,46,46,48,48,51,51,52,54,56,58,59,60,62,64]
+
 	print(mean(nums))
+
 	print(median(nums))
+
 	f1 = mode(nums)
 	print(f1.mode_lister())
 	print(f1.biggest_mode())
