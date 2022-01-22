@@ -26,13 +26,14 @@ class ClassInterval():
 
 
 class mean(ClassInterval):
-	# total_fx = '∑𝑓𝑋'
-	# N = '𝑁'
+	# total_fx = ∑𝑓𝑋
+	# N = 𝑁
 
-	def __init__(self,f:list,x:list):
+	def __init__(self,f:list,x:list,lowest:int,highest:int,class_size:int):
 		self.f = f
 		self.x = x
 		self.fx = []
+		super().__init__(lowest,highest,class_size)
 
 
 	def _fx_finder(self):
@@ -45,8 +46,7 @@ class mean(ClassInterval):
 	def _mean_solution(self,Efx,n,total):
 		meantable = PrettyTable(['mean'])
 		meantable.add_row(['Efx/N\n'])
-		meantable.add_row([f'{Efx}\n---\n{n}\n'])
-		meantable.add_row([f'= {total}'])
+		meantable.add_row([f'{Efx}\n---\n{n}\n = {total}'])
 		return meantable
 
 
@@ -70,14 +70,14 @@ class median(ClassInterval):
 		super().__init__(lowest,highest,class_size)
 
 
-	def _median_solution(self,N,fmBefore,Lm,fm,i,total_median):
+	def _median_solution(self,N,fmBefore,Lm,fm,i,median_answer):
 		mediantable = PrettyTable(['median'])
 		mediantable.add_row(['((N/2) - Efx-1)\nLm + ---------------- i\nfm\n'])
 		mediantable.add_row([f'(({N*2}/2) - {fmBefore})\n{Lm} + --------------- {i}\n{fm}\n'])
 		mediantable.add_row([f'({N} - {fmBefore})\n{Lm} + --------------- {i}\n{fm}\n'])
 		mediantable.add_row([f'({N - fmBefore})\n{Lm} + --------------- {i}\n{fm}\n'])
 		mediantable.add_row([f'{Lm} + ({(N-fmBefore)/fm}) {i}\n'])
-		mediantable.add_row([f'{Lm} + {((N-fmBefore)/fm)*i}\n= {total_median}'])
+		mediantable.add_row([f'{Lm} + {((N-fmBefore)/fm)*i}\n = {median_answer}'])
 		return mediantable
 
 
@@ -92,14 +92,47 @@ class median(ClassInterval):
 		i = midclass[-1] - midclass[0] + 1
 
 		mid = (N-fmBefore)/fm * i
-		total_median = Lm + mid
+		median_answer = Lm + mid
 		
-		return self._median_solution(N,fmBefore,Lm,fm,i,total_median)
+		return self._median_solution(N,fmBefore,Lm,fm,i,median_answer)
 
 
 
 class mode(ClassInterval):
-	pass
+	# T1 = ∆1 answer
+	# T2 = ∆2 answer
+
+	def __init__(self,f:list,lowest:int,highest:int,class_size:int):
+		self.f = f
+		super().__init__(lowest,highest,class_size)
+
+
+	def _mode_solution(self,hf,Lmo,t1,t2,T1,T2,i,mode_answer):
+		modetable = PrettyTable(['mode'])
+		modetable.add_row(['(T1)\nLmo + ----------- i\n T1 + T2\n'])
+		modetable.add_row([f'({hf}-{t1})\n{Lmo} + ----------- {i}\n ({hf}-{t1}) + ({hf}-{t2})\n'])
+		modetable.add_row([f'{T1}\n{Lmo} + --------- {i}\n {T1} + {T2}\n'])
+		modetable.add_row([f'{T1}\n{Lmo} + --------- {i}\n {T1+T2}\n'])
+		modetable.add_row([f'{Lmo} + ({T1/(T1+T2)}) {i}\n'])
+		modetable.add_row([f'{Lmo} + ({T1/(T1+T2) * i}\n= {mode_answer}'])
+		return modetable
+
+
+	def get_mode(self):
+		hf = 0
+		for x in self.f:
+			if x >= hf:
+				hf = x
+		Lmo = self.single_class[self.f.index(hf)][0]
+		t1,t2 = self.f[self.f.index(hf)-1],self.f[self.f.index(hf)+1]
+		T1,T2 = hf - self.f[self.f.index(hf)-1],hf - self.f[self.f.index(hf)+1]
+		midclass = self.single_class[self.f.index(hf)+1]
+		i = midclass[-1] - midclass[0] + 1
+
+		mid = T1/(T1+T2) * i
+		mode_answer = Lmo + mid
+
+		return 	self._mode_solution(hf,Lmo,t1,t2,T1,T2,i,mode_answer)
 
 
 
@@ -109,9 +142,12 @@ if __name__ == '__main__':
 	x = [122,131,140,149,158,167,176]
 	cumf = [3,8,17,29,34,38,40]
 
-	my_mean = mean(f,x)
+	my_mean = mean(f,x,lowest=118,highest=180,class_size=9)
 	print(my_mean.get_mean())
 
-	my_median = median(f,cumf,118,180,9)
+	my_median = median(f,cumf,lowest=118,highest=180,class_size=9)
 	# print(my_median.class_interval_table())
 	print(my_median.get_median())
+
+	my_mode = mode(f,lowest=118,highest=180,class_size=9)
+	print(my_mode.get_mode())
