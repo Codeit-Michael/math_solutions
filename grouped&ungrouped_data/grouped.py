@@ -73,9 +73,9 @@ class median(ClassInterval):
 	def _median_solution(self,N,fmBefore,Lm,fm,i,median_answer):
 		mediantable = PrettyTable(['median'])
 		mediantable.add_row(['((N/2) - Efx-1)\nLm + ---------------- i\nfm\n'])
-		mediantable.add_row([f'(({N*2}/2) - {fmBefore})\n{Lm} + --------------- {i}\n{fm}\n'])
-		mediantable.add_row([f'({N} - {fmBefore})\n{Lm} + --------------- {i}\n{fm}\n'])
-		mediantable.add_row([f'({N - fmBefore})\n{Lm} + --------------- {i}\n{fm}\n'])
+		mediantable.add_row([f'(({N*2}/2) - {fmBefore})\n{Lm} + ------------- {i}\n{fm}\n'])
+		mediantable.add_row([f'({N} - {fmBefore})\n{Lm} + ---------- {i}\n{fm}\n'])
+		mediantable.add_row([f'{N - fmBefore}\n{Lm} + -------- {i}\n{fm}\n'])
 		mediantable.add_row([f'{Lm} + ({(N-fmBefore)/fm}) {i}\n'])
 		mediantable.add_row([f'{Lm} + {((N-fmBefore)/fm)*i}\n = {median_answer}'])
 		return mediantable
